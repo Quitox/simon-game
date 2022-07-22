@@ -52,7 +52,10 @@ window.addEventListener("keydown",function(e){
             coloresList.style.visibility = "hidden"; // oculta element
 
         //Juega la maquina - Primera vez
+        setTimeout(() => {
             maquinaPlay(); //return nada
+        }, 150);    
+        
         
     } //otra tecla no hace nada - en juego, nigúna tecla hace nada.
 
@@ -79,7 +82,7 @@ for(i = 0; i<btn.length; i++){
             //Ejecutar el siguient turno de la maquina, siempre que:
                 //1 - El elemento del array colores "exista"
                 //2 - La playing >> false. (porque implicaria que perdió)
-            if ((colores[position] == undefined) && (playing == false)){ // comprobación innesesaria.
+            if ((colores[position] == undefined) && (position != 0) && (playing == true) ){ // comprobación innesesaria.
                 
                 lvlNum++; // actualiza el nivel
                 lvl.innerText = lvlNum; //escribe el nuevo nivel
@@ -159,20 +162,26 @@ function brilloMaker(elemento, origen){
             200 //delay milisegundos
         );
     }else{ //maquina
-        elemento.style.opacity(0);
+        console.log("brillo maquina");
+        let valorColor = elemento.style.backgroundColor;
+        elemento.style.backgroundColor = "#fff";
         setTimeout(
             function(){
-                elemento.style.opacity(100);
+                elemento.style.backgroundColor = valorColor;
             },
-            100 //delay milisegundos
+            500 //delay milisegundos
         );
     }
+}
 
 
 function maquinaPlay(){
 
     let i = Math.floor(Math.random()*4) // num natural random 0 a 3
-    //console.log("Elemento elegido por la maquina: " + btn[i].id);
+    
+    console.log("Elemento elegido por la maquina: " + btn[i].id);
+    
+    console.log(typeof(btn[i]));
 
     soundMaker(btn[i].id);
     brilloMaker(btn[i], "maquina");
@@ -209,40 +218,44 @@ function jugadorPlay(elemento, i){
 
             console.log("Se equivoco... Restart.");
             console.log("Incorrecto => " + elementoName + " == " + colores[i]);
-            
-            // Efecto de derrorta
-                soundMaker(); //devuelve nada y dispara el sonido por defaul(wrong.mp3)
-                document.querySelector("body").style.backgroundColor("rgba(255,0,0,.5"); // color de derrota
-                title.innerText = "YOU LOSSE";
-                setTimeout(
-                    function(){
-                        document.querySelector("body").style.backgroundColor("#011F3F"); // restablece color normal
-                        setTimeout(function(){
-                            //Se ocultan los elementos html como al inicio
-                            contadorLvl.style.visibility = "hidden";
-                            contador.style.visibility = "hidden";
-                            ayuda.style.visibility = "hidden";
-                            coloresList.style.visibility = "hidden";
-
-                            //Restablece el titulo inicial
-                            title.innerText = "Press SPACE BAR to Start";
-                        },2000)
-                    },
-                    100 //delay milisegundos
-                );
-          
-            playing = false; // no se ejecutara mas turnos
-            
-
-            // //Se ocultan los elementos html como al inicio
-            // contadorLvl.style.visibility = "hidden";
-            // contador.style.visibility = "hidden";
-            // ayuda.style.visibility = "hidden";
-            // coloresList.style.visibility = "hidden";
-
-            // //Restablece el titulo inicial
-            // title.innerText = "Press SPACE BAR to Start";
+            derrota();
 
         }
 
+}
+
+function derrota(){
+                
+            // Efecto de derrorta
+            soundMaker(); //devuelve nada y dispara el sonido por defaul(wrong.mp3)
+            document.querySelector("body").classList.add("game-over"); // color de derrota
+            title.innerText = "YOU LOSSE";
+            setTimeout(
+                function(){
+                    document.querySelector("body").classList.remove("game-over"); // restablece color normal
+                    setTimeout(function(){
+                        //Se ocultan los elementos html como al inicio
+                        contadorLvl.style.visibility = "hidden";
+                        contador.style.visibility = "hidden";
+                        ayuda.style.visibility = "hidden";
+                        coloresList.style.visibility = "hidden";
+
+                        //Restablece el titulo inicial
+                        title.innerText = "Press SPACE BAR to Start";
+                    },2000)
+                },
+                100 //delay milisegundos
+            );
+      
+        playing = false; // no se ejecutara mas turnos
+        
+
+        // //Se ocultan los elementos html como al inicio
+        // contadorLvl.style.visibility = "hidden";
+        // contador.style.visibility = "hidden";
+        // ayuda.style.visibility = "hidden";
+        // coloresList.style.visibility = "hidden";
+
+        // //Restablece el titulo inicial
+        // title.innerText = "Press SPACE BAR to Start";
 }
